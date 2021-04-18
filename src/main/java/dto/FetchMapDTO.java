@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Tweny
  */
-public class FetchGetDTO {
+public class FetchMapDTO {
 
     //Skal bruge  org.json.JSONArray -> søg efter org.json i dependencies
     //JSONObject json = new JSONObject("");
@@ -26,10 +26,10 @@ public class FetchGetDTO {
     private long population;
     private List<String> timezones;
 
-    public FetchGetDTO() {
+    public FetchMapDTO() {
     }
 
-    public FetchGetDTO(String name, String nativeName, String capital, String area, List<String> languages, List<String> borders, long population, List<String> timezones) {
+    public FetchMapDTO(String name, String nativeName, String capital, String area, List<String> languages, List<String> borders, long population, List<String> timezones) {
         this.name = name;
         this.nativeName = nativeName;
         this.capital = capital;

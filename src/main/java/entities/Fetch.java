@@ -5,7 +5,15 @@
  */
 package entities;
 
+import com.google.gson.Gson;
+import dto.FetchPersonDTO;
+import dto.FetchPersonDTOtoPost;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,7 +25,7 @@ import javax.ws.rs.WebApplicationException;
  * @author Tweny
  */
 public class Fetch {
-    
+
     private String uri;
     private boolean isCalled = false;
 
@@ -29,25 +37,9 @@ public class Fetch {
         return uri;
     }
 
-    public String makeFetchGet() throws WebApplicationException {
-        isCalled = true;
-        try {
-            URL url = new URL(uri);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("Accept", "application/json;charset=UTF-8");
-            Scanner scan = new Scanner(con.getInputStream());
-            String jsonStr = null;
-            if (scan.hasNext()) {
-                jsonStr = scan.nextLine();
-            }
-            scan.close();
-            System.out.println(jsonStr);
-            return jsonStr;
-        } catch (MalformedURLException ex) {
-            throw new WebApplicationException("This is a MalformedURLException", 404);
-        } catch (IOException ex) {
-            throw new WebApplicationException("This is a MalformedURLException", 404);
-        }
+    @Override
+    public String toString() {
+        return "Fetch{" + "uri=" + uri + ", isCalled=" + isCalled + '}';
     }
+
 }
