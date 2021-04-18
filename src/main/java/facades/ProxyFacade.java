@@ -41,21 +41,7 @@ public class ProxyFacade {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    public FetchPersonDTO makeSinglePersonFetchPost(FetchPersonDTO fetchPersonDTO) throws IOException {
-        String URL = "https://codergram.dk/Flow2Week2Person-Address/api/person";
-        Fetch fetch = new Fetch(URL);
-        System.out.println(fetchPersonDTO.toString());
-        System.out.println("------");
-        String JSONString = makeFetchPost(fetch, fetchPersonDTO);
-        System.out.println("------");
-        System.out.println(JSONString);
-        Gson gson = new Gson();
-        fetchPersonDTO = gson.fromJson(JSONString, FetchPersonDTO.class);
-        System.out.println(fetchPersonDTO);
-        return fetchPersonDTO;
-    }
-
-    public FetchPersonDTO makeSinglePersonFetchGet(String id) {
+      public FetchPersonDTO makeSinglePersonFetchGet(String id) throws WebApplicationException {
         String URL = "https://codergram.dk/Flow2Week2Person-Address/api/person/" + id;
         Fetch fetch = new Fetch(URL);
         String JSONString = makeFetchGetObject(fetch);
@@ -67,7 +53,7 @@ public class ProxyFacade {
         return fetchPersonDTO;
     }
 
-    public FetchPersonsDTO makeAllPersonFetchGet() {
+    public FetchPersonsDTO makeAllPersonFetchGet() throws WebApplicationException {
         String URL = "https://codergram.dk/Flow2Week2Person-Address/api/person/all";
         Fetch fetch = new Fetch(URL);
         String JSONString = makeFetchGetObject(fetch);
@@ -81,8 +67,44 @@ public class ProxyFacade {
 
         return fetchPersonsDTO;
     }
+    
+    public FetchPersonDTO makeSinglePersonFetchPost(FetchPersonDTO fetchPersonDTO) throws WebApplicationException {
+        String URL = "https://codergram.dk/Flow2Week2Person-Address/api/person";
+        Fetch fetch = new Fetch(URL);
+        System.out.println(fetchPersonDTO.toString());
+        System.out.println("------");
+        String JSONString = makeFetchPost(fetch, fetchPersonDTO);
+        System.out.println("------");
+        System.out.println(JSONString);
+        Gson gson = new Gson();
+        fetchPersonDTO = gson.fromJson(JSONString, FetchPersonDTO.class);
+        System.out.println(fetchPersonDTO);
+        return fetchPersonDTO;
+    }
+    
+     public FetchPersonDTO makeSinglePersonFetchPut(FetchPersonDTO fetchPersonDTO, String id) throws WebApplicationException {
+        String URL = "https://codergram.dk/Flow2Week2Person-Address/api/person/" + id;
+        Fetch fetch = new Fetch(URL);
+        System.out.println(fetchPersonDTO.toString());
+        System.out.println("------");
+        String JSONString = makeFetchPut(fetch, fetchPersonDTO);
+        System.out.println("------");
+        System.out.println(JSONString);
+        Gson gson = new Gson();
+        fetchPersonDTO = gson.fromJson(JSONString, FetchPersonDTO.class);
+        System.out.println(fetchPersonDTO);
+        return fetchPersonDTO;
+    }
+     
+      public String makeSinglePersonFetchDelete(String id) throws WebApplicationException {
+        String URL = "https://codergram.dk/Flow2Week2Person-Address/api/person/" + id;
+        Fetch fetch = new Fetch(URL);
+        String JSONString = makeFetchDelete(fetch, id);
+        System.out.println(JSONString);
+        return JSONString;
+    }
 
-    public FetchMapDTO makeSingleMapFetchGet(String country) {
+    public FetchMapDTO makeSingleMapFetchGet(String country) throws WebApplicationException {
         String URL = "http://restcountries.eu/rest/v1/alpha?codes=" + country;
         Fetch fetch = new Fetch(URL);
         String JSONString = makeFetchGetArray(fetch);
@@ -183,6 +205,9 @@ public class ProxyFacade {
 //        return fullJSONResult;
     }
 
+    /**
+     * Private metoder til proxy
+     */
     
     private String makeFetchGetObject(Fetch fetch) throws WebApplicationException {
         try {
@@ -245,7 +270,6 @@ public class ProxyFacade {
             con.setRequestProperty("Accept", "application/json");
             con.setRequestProperty("Content-Type", "application/json");
 
-            // For POST only - START
             con.setDoOutput(true);
 
             Gson gson = new Gson();
@@ -255,7 +279,6 @@ public class ProxyFacade {
                     con.getOutputStream());
             writer.write(urlParameters);
             writer.flush();
-            // For POST only - END
 
             int responseCode = con.getResponseCode();
             System.out.println("POST Response Code :: " + responseCode);
@@ -271,7 +294,6 @@ public class ProxyFacade {
                 }
                 in.close();
 
-                // print result
                 System.out.println(response.toString());
 
                 return response.toString();
@@ -286,6 +308,92 @@ public class ProxyFacade {
         }
     }
     
+    
+        private String makeFetchPut(Fetch fetch, FetchPersonDTO fetchPersonDTO) throws WebApplicationException {
+        try {
+            URL obj = new URL(fetch.getUri());
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("PUT");
+            con.setRequestProperty("Accept", "application/json");
+            con.setRequestProperty("Content-Type", "application/json");
+
+            con.setDoOutput(true);
+
+            Gson gson = new Gson();
+            String urlParameters = gson.toJson(fetchPersonDTO);
+
+            
+            OutputStreamWriter writer = new OutputStreamWriter(
+                    con.getOutputStream());
+            writer.write(urlParameters);
+            writer.flush();
+
+            int responseCode = con.getResponseCode();
+            System.out.println("PUT Response Code :: " + responseCode);
+
+            if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        con.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                System.out.println(response.toString());
+
+                return response.toString();
+            } else {
+                System.out.println("PUT request not worked");
+                return "";
+            }
+        } catch (MalformedURLException ex) {
+            throw new WebApplicationException("This is a MalformedURLException", 404);
+        } catch (IOException ex) {
+            throw new WebApplicationException("This is a MalformedURLException", 404);
+        }
+    }
+        
+        
+         private String makeFetchDelete(Fetch fetch, String id) throws WebApplicationException {
+        try {
+            URL obj = new URL(fetch.getUri());
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("DELETE");
+            con.setRequestProperty("Accept", "application/json");
+            con.setRequestProperty("Content-Type", "application/json");
+
+            con.setDoOutput(true);
+
+            int responseCode = con.getResponseCode();
+            System.out.println("DELETE Response Code :: " + responseCode);
+
+            if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        con.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                System.out.println(response.toString());
+
+                return response.toString();
+            } else {
+                System.out.println("DELETE request not worked");
+                return "";
+            }
+        } catch (MalformedURLException ex) {
+            throw new WebApplicationException("This is a MalformedURLException", 404);
+        } catch (IOException ex) {
+            throw new WebApplicationException("This is a MalformedURLException", 404);
+        }
+    }
     
     
     
