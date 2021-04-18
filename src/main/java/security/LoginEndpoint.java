@@ -26,7 +26,9 @@ import javax.ws.rs.core.Response;
 import security.errorhandling.AuthenticationException;
 import errorhandling.GenericExceptionMapper;
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.GET;
 import utils.EMF_Creator;
+import utils.SetupTestUsers;
 
 @Path("login")
 public class LoginEndpoint {
@@ -35,6 +37,14 @@ public class LoginEndpoint {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     public static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
 
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public String setupDB() {
+        SetupTestUsers stu = new SetupTestUsers();
+        stu.setupUsers();
+        return "{\"msg\":\"DB is running\"}";
+    }
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
