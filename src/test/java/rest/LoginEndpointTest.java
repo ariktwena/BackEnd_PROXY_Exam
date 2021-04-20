@@ -1,5 +1,12 @@
 package rest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import dto.PersonDTO;
+import entities.Hobby;
+import entities.Job;
+import entities.NickName;
+import entities.Person;
 import entities.User;
 import entities.Role;
 
@@ -12,9 +19,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,6 +92,12 @@ public class LoginEndpointTest {
             em.persist(user);
             em.persist(admin);
             em.persist(both);
+            
+            em.createNamedQuery("Person.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Job.deleteAllRows").executeUpdate();
+            em.createNamedQuery("NickName.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Hobby.deleteAllRows").executeUpdate();
+            
             //System.out.println("Saved test data to database");
             em.getTransaction().commit();
         } finally {
@@ -219,6 +234,44 @@ public class LoginEndpointTest {
                 .statusCode(403)
                 .body("code", equalTo(403))
                 .body("message", equalTo("Not authenticated - do login"));
+    }
+    
+    /** Custome security test **/
+     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    
+    @Test
+     public void testGetAllPersonsSecurity() {
+        Person p1 = new Person("Person 1");
+        Job j1 = new Job("Job 1");
+        NickName n1 = new NickName("Nickname 1");
+        Hobby h1 = new Hobby("Hobby 1");
+        p1.setJob(j1);
+        p1.setNickName(n1);
+        p1.addHobby(h1);
+        PersonDTO personDTO = new PersonDTO(p1);
+        String requestBody = GSON.toJson(personDTO);
+
+        given()
+                .contentType("application/json")
+                .and()
+                .body(requestBody)
+                .when()
+                .post("/persons")
+                .then()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .and()
+                .body("name", equalTo("Person 1"));
+         
+        login("user", "test");
+        
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .get("/persons/security")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", hasItems("Person 1"));
     }
 
 }

@@ -148,13 +148,13 @@ public class ProxyFacade {
 
             JSONArray json = new JSONArray(s);
 
-            for (int i = 0; i < json.length(); i++) {
-                JSONObject object = json.getJSONObject(i);
-                System.out.println(object.toString());
-                FetchMapDTO fetchMapDTO = gson.fromJson(object.toString(), FetchMapDTO.class);
-                System.out.println(fetchMapDTO);
-                fullJSONResultToFetchGetDTO.add(fetchMapDTO);
-            }
+//            for (int i = 0; i < json.length(); i++) {
+//                JSONObject object = json.getJSONObject(i);
+//                System.out.println(object.toString());
+//                FetchMapDTO fetchMapDTO = gson.fromJson(object.toString(), FetchMapDTO.class);
+//                System.out.println(fetchMapDTO);
+//                fullJSONResultToFetchGetDTO.add(fetchMapDTO);
+//            }
 
             fullJSONResult.add(json);
 
