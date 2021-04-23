@@ -1,16 +1,52 @@
-[![Build Status](https://www.travis-ci.com/ariktwena/BackEnd_PROXY_Exam.svg?token=pepPqVzg9ADy2wZERUTz&branch=master)](https://www.travis-ci.com/ariktwena/BackEnd_PROXY_Exam)
+<h1 align="center">Welcome to 3 Semester Spring 2021 - CA3 👋</h1>
+<p>
+  <a href="tba" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
+  <a href="LICENSE" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  </a>
+  <a href="https://travis-ci.com/codergram/3SEM-CA2" target="_blank">
+    <img alt="Build status" src="https://travis-ci.com/codergram/3SEM-CA2.svg?token=9yP3z9qzYHPxRf7MSmsT&branch=main" />
+  </a>
+</p>
 
-*This project is meant as start code for projects and exercises given in Flow-1+2 at http://cphbusiness.dk in the Study Program "AP degree in Computer Science"*
+> Course assignment 3 for 3. Semester of Spring 2021
 
-*Projects which are expected to use this start-code are projects that require all, or most of the following technologies:*
- - *JPA and REST*
-- *Testing, including database test*
-- *Testing, including tests of REST-API's*
-- *CI and CONTINUOUS DELIVERY*
+### 📚 [Assignment](https://docs.google.com/document/d/1gAuwqsj-IhPBNk2KQ96Aku0S1suwfOXdC_-Ux9omVtc/)
+### 📜 [API Documentation](https://documenter.getpostman.com/view/13817901/Tz5wXafa)
+### 🏠 [Frontend](https://codergram.me/ca2/)
+### 📡 [Backend](https://api.codergram.me/ca2/)
 
-### Preconditions
-*In order to use this code, you should have a local developer setup + a "matching" droplet on Digital Ocean as described in the 3. semester guidelines* 
-# Getting Started
+## Author
 
-This document explains how to use this code (build, test and deploy), locally with maven, and remotely with maven controlled by Travis
- - [How to use](https://docs.google.com/document/d/1K6s6Tt65bzB8bCSE_NUE8alJrLRNTKCwax3GEm4OjOE/edit?usp=sharing)
+👤 **Emil Elkjær Nielsen**
+
+* [Github](https://github.com/eelkjaer)
+* [LinkedIn](https://linkedin.com/in/emil-elkjær)
+
+👤 **Sigurd Arik Gaarde Nielsen**
+
+* [Github](https://github.com/ariktwena)
+* [LinkedIn](https://www.linkedin.com/in/arik-gaarde-nielsen-3a54255/)
+
+👤 **Jacob Lange Nielsen**
+
+* [Github](https://github.com/Langeeee)
+* [LinkedIn](https://linkedin.com/in/jacob-lange-nielsen-28219b1a8)
+
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## Contributing
+
+Feel free to fork this project and make your changes.
+
+## 📝 License
+
+This project is [MIT](LICENSE) licensed.
+
+***
+_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
