@@ -217,7 +217,7 @@ public class ProxyFacade {
             Callable<Joke> task = new Callable<Joke>() {
                 @Override
                 public Joke call() {
-                    Joke joke = new Joke(fetch.getUri(), makeFetchGetArray(fetch));
+                    Joke joke = new Joke(fetch.getUri(), makeFetchGetObject(fetch));
                     return joke;
                 }
             };
@@ -228,12 +228,10 @@ public class ProxyFacade {
         List<JokeDTO> allJokeDTOs = new ArrayList<>();
         //JokeDTO jokeDTO //VIGTIGT.... HVIS VI SKAL SAMMENSÆTTE FLERE JOKES TIL SAMME DTO, SÅ LAV NY DTO OG TILFØJ EFTER HVERT LOOP
         for (Future<Joke> joke : futures) {
-//            joke.get(4000, TimeUnit.MILLISECONDS);
-            Joke theJoke = joke.get(6000, TimeUnit.MILLISECONDS);
-            System.out.println(theJoke.getJSON());
-            JSONObject object = new JSONObject(theJoke.getJSON());
+            System.out.println(joke.get(2000, TimeUnit.MILLISECONDS).getJSON());
+            JSONObject object = new JSONObject(joke.get(2000, TimeUnit.MILLISECONDS).getJSON());
             System.out.println(object);
-            String url = theJoke.getUrl();
+            String url =  joke.get(2000, TimeUnit.MILLISECONDS).getUrl();
             JokeDTO jokeDTO;
             switch (url) {
                 case "https://api.chucknorris.io/jokes/random":
