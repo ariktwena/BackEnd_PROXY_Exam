@@ -236,14 +236,12 @@ public class ProxyFacade {
             JokeDTO jokeDTO;
             switch (url) {
                 case "https://api.chucknorris.io/jokes/random":
-                    // code block
                     System.out.println("Vi er her");
                     jokeDTO = new JokeDTO(object.getString("icon_url"), object.getString("value"));
                     System.out.println(jokeDTO);
                     allJokeDTOs.add(jokeDTO);
                     break;
                 case "https://icanhazdadjoke.com/":
-                    // code block
                     System.out.println("Nu er vi her");
                     jokeDTO = new JokeDTO(url, object.getString("joke"));
                     System.out.println(jokeDTO);
