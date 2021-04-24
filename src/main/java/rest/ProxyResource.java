@@ -46,6 +46,22 @@ public class ProxyResource {
     private ExecutorService threadPool = Executors.newCachedThreadPool();
     private ProxyFacade proxyFacade = new ProxyFacade();
     
+    @Path("person")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAllFetchePersonDTO() {
+        FetchPersonsDTO fetchPersonsDTO = proxyFacade.makeAllPersonFetchGet();
+        return GSON.toJson(fetchPersonsDTO);
+    }
+    
+    @Path("jokes")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAllFetcheJokeDTO() throws TimeoutException, InterruptedException, ExecutionException {
+        List<JokeDTO> jokeDTOs = proxyFacade.runParallelWithCallablesJokeToDTO(threadPool);
+        return GSON.toJson(jokeDTOs);
+    }
+    
     @Context
     private UriInfo context;
 
@@ -77,14 +93,6 @@ public class ProxyResource {
     public String getSingleFetcheMapDTO(@PathParam("countrycode") String country) {
         FetchMapDTO fetchMapDTO = proxyFacade.makeSingleMapFetchGet(country);
         return GSON.toJson(fetchMapDTO);
-    }
-
-    @Path("person")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getAllFetchePersonDTO() {
-        FetchPersonsDTO fetchPersonsDTO = proxyFacade.makeAllPersonFetchGet();
-        return GSON.toJson(fetchPersonsDTO);
     }
 
     @Path("person/{id}")
@@ -129,11 +137,4 @@ public class ProxyResource {
         return response;
     }
     
-    @Path("jokes")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String getAllFetcheJokeDTO() throws TimeoutException, InterruptedException, ExecutionException {
-        List<JokeDTO> jokeDTOs = proxyFacade.runParallelWithCallablesJokeToDTO(threadPool);
-        return GSON.toJson(jokeDTOs);
-    }
 }
