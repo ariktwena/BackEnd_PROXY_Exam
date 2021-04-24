@@ -56,7 +56,7 @@ On your droplet, either using workbench locally or via the SQL-client on the dro
 1. With nano, open docker-compose.yml
 1. Under the web: section find the lines given below and change USER, and PW to your values, and change CONNECTION_STR to point startcode_demo (If you have an existing Java-project, using a database on your droplet, follow the instructions given in DigitalOcean Setup instructions "Create another database and set environment variables to host additional Java Projects") 
  
-1. CONNECTION_STR: "jdbc:mysql://db:3306/startcode"
+1. Crate `CONNECTION_STR: "jdbc:mysql://db:3306/startcode"`
 <br>
 `USER: "dev"`
 <br>
