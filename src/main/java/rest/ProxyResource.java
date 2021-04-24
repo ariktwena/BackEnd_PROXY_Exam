@@ -11,6 +11,7 @@ import dto.FetchMapDTO;
 import dto.FetchPersonDTO;
 import dto.FetchPersonDTOtoPost;
 import dto.FetchPersonsDTO;
+import dto.JokeDTO;
 import facades.ProxyFacade;
 import java.io.IOException;
 import java.util.List;
@@ -126,5 +127,13 @@ public class ProxyResource {
     public String proxyDeletePersonPost(@PathParam("id") String id) {
         String response = proxyFacade.makeSinglePersonFetchDelete(id);
         return response;
+    }
+    
+    @Path("jokes")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAllFetcheJokeDTO() throws TimeoutException, InterruptedException, ExecutionException {
+        List<JokeDTO> jokeDTOs = proxyFacade.runParallelWithCallablesJokeToDTO(threadPool);
+        return GSON.toJson(jokeDTOs);
     }
 }

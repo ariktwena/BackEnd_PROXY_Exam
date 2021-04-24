@@ -11,7 +11,9 @@ import dto.FetchMapDTO;
 import dto.FetchPersonDTO;
 import dto.FetchPersonDTOtoPost;
 import dto.FetchPersonsDTO;
+import dto.JokeDTO;
 import entities.Fetch;
+import entities.Joke;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,7 +43,7 @@ public class ProxyFacade {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-      public FetchPersonDTO makeSinglePersonFetchGet(String id) throws WebApplicationException {
+    public FetchPersonDTO makeSinglePersonFetchGet(String id) throws WebApplicationException {
         String URL = "https://codergram.dk/Flow2Week2Person-Address/api/person/" + id;
         Fetch fetch = new Fetch(URL);
         String JSONString = makeFetchGetObject(fetch);
@@ -67,7 +69,7 @@ public class ProxyFacade {
 
         return fetchPersonsDTO;
     }
-    
+
     public FetchPersonDTO makeSinglePersonFetchPost(FetchPersonDTO fetchPersonDTO) throws WebApplicationException {
         String URL = "https://codergram.dk/Flow2Week2Person-Address/api/person";
         Fetch fetch = new Fetch(URL);
@@ -81,8 +83,8 @@ public class ProxyFacade {
         System.out.println(fetchPersonDTO);
         return fetchPersonDTO;
     }
-    
-     public FetchPersonDTO makeSinglePersonFetchPut(FetchPersonDTO fetchPersonDTO, String id) throws WebApplicationException {
+
+    public FetchPersonDTO makeSinglePersonFetchPut(FetchPersonDTO fetchPersonDTO, String id) throws WebApplicationException {
         String URL = "https://codergram.dk/Flow2Week2Person-Address/api/person/" + id;
         Fetch fetch = new Fetch(URL);
         System.out.println(fetchPersonDTO.toString());
@@ -95,8 +97,8 @@ public class ProxyFacade {
         System.out.println(fetchPersonDTO);
         return fetchPersonDTO;
     }
-     
-      public String makeSinglePersonFetchDelete(String id) throws WebApplicationException {
+
+    public String makeSinglePersonFetchDelete(String id) throws WebApplicationException {
         String URL = "https://codergram.dk/Flow2Week2Person-Address/api/person/" + id;
         Fetch fetch = new Fetch(URL);
         String JSONString = makeFetchDelete(fetch, id);
@@ -155,7 +157,6 @@ public class ProxyFacade {
 //                System.out.println(fetchMapDTO);
 //                fullJSONResultToFetchGetDTO.add(fetchMapDTO);
 //            }
-
             fullJSONResult.add(json);
 
         }
@@ -205,16 +206,66 @@ public class ProxyFacade {
 //        return fullJSONResult;
     }
 
+    public List<JokeDTO> runParallelWithCallablesJokeToDTO(ExecutorService threadPool) throws TimeoutException, InterruptedException, ExecutionException {
+        List<Fetch> fetchList = new ArrayList();
+        fetchList.add(new Fetch("https://api.chucknorris.io/jokes/random"));
+        fetchList.add(new Fetch("https://icanhazdadjoke.com/"));
+
+        List<Future<Joke>> futures = new ArrayList<>();
+
+        for (Fetch fetch : fetchList) {
+            Callable<Joke> task = new Callable<Joke>() {
+                @Override
+                public Joke call() {
+                    Joke joke = new Joke(fetch.getUri(), makeFetchGetObject(fetch));
+                    return joke;
+                }
+            };
+            futures.add(threadPool.submit(task));
+        }
+
+        Gson gson = new Gson();
+        List<JokeDTO> allJokeDTOs = new ArrayList<>();
+        //JokeDTO jokeDTO //VIGTIGT.... HVIS VI SKAL SAMMENSÆTTE FLERE JOKES TIL SAMME DTO, SÅ LAV NY DTO OG TILFØJ EFTER HVERT LOOP
+        for (Future<Joke> joke : futures) {
+            String s = joke.get(2000, TimeUnit.MILLISECONDS).getJSON();
+            System.out.println(s);
+            JSONObject object = new JSONObject(s);
+            System.out.println(object);
+            String url = joke.get(2000, TimeUnit.MILLISECONDS).getUrl();
+            JokeDTO jokeDTO;
+            switch (url) {
+                case "https://api.chucknorris.io/jokes/random":
+                    // code block
+                    System.out.println("Vi er her");
+                    jokeDTO = new JokeDTO(object.getString("icon_url"), object.getString("value"));
+                    System.out.println(jokeDTO);
+                    allJokeDTOs.add(jokeDTO);
+                    break;
+                case "https://icanhazdadjoke.com/":
+                    // code block
+                    System.out.println("Nu er vi her");
+                    jokeDTO = new JokeDTO(url, object.getString("joke"));
+                    System.out.println(jokeDTO);
+                    allJokeDTOs.add(jokeDTO);
+                    break;
+                default:
+                // code block
+            }
+        }
+        return allJokeDTOs;
+    }
+
     /**
      * Private metoder til proxy
      */
-    
     private String makeFetchGetObject(Fetch fetch) throws WebApplicationException {
         try {
             URL url = new URL(fetch.getUri());
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            con.setRequestProperty("Accept", "application/json;charset=UTF-8");
+            con.setRequestProperty("Accept", "application/json");
+            //con.setRequestProperty("Accept", "application/json;charset=UTF-8");
             int responseCode = con.getResponseCode();
             System.out.println("\nSending 'GET' request to URL : " + url);
             System.out.println("Response Code : " + responseCode);
@@ -307,9 +358,8 @@ public class ProxyFacade {
             throw new WebApplicationException("This is a MalformedURLException", 404);
         }
     }
-    
-    
-        private String makeFetchPut(Fetch fetch, FetchPersonDTO fetchPersonDTO) throws WebApplicationException {
+
+    private String makeFetchPut(Fetch fetch, FetchPersonDTO fetchPersonDTO) throws WebApplicationException {
         try {
             URL obj = new URL(fetch.getUri());
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -322,7 +372,6 @@ public class ProxyFacade {
             Gson gson = new Gson();
             String urlParameters = gson.toJson(fetchPersonDTO);
 
-            
             OutputStreamWriter writer = new OutputStreamWriter(
                     con.getOutputStream());
             writer.write(urlParameters);
@@ -355,9 +404,8 @@ public class ProxyFacade {
             throw new WebApplicationException("This is a MalformedURLException", 404);
         }
     }
-        
-        
-         private String makeFetchDelete(Fetch fetch, String id) throws WebApplicationException {
+
+    private String makeFetchDelete(Fetch fetch, String id) throws WebApplicationException {
         try {
             URL obj = new URL(fetch.getUri());
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -394,10 +442,7 @@ public class ProxyFacade {
             throw new WebApplicationException("This is a MalformedURLException", 404);
         }
     }
-    
-    
-    
-    
+
     public static void main(String[] args) throws TimeoutException, InterruptedException, ExecutionException {
 //        Proxy proxy = new Proxy();
 //        System.out.println(proxy.fetchData("de"));
@@ -409,12 +454,23 @@ public class ProxyFacade {
         long start = System.nanoTime();
         //TODO Add your parrallel calculation here 
         ExecutorService threadPool = Executors.newCachedThreadPool();
-        List<JSONArray> fetchedDataParallelFuture = new ProxyFacade().runParallelWithCallablesMap(threadPool);
 
+//        List<JSONArray> fetchedDataParallelFuture = new ProxyFacade().runParallelWithCallablesMap(threadPool);
+//
         long timeParallel_Future = System.nanoTime() - start;
+//        System.out.println("Time Parallel (Future/Callables): " + ((timeParallel_Future) / 1_000_000) + " ms.");
+//
+//        for (JSONArray s : fetchedDataParallelFuture) {
+//            System.out.println(GSON.toJson(s));
+//            System.out.println("----------------------------------");
+//        }
+
+        List<JokeDTO> fetchedDataParallelFutureJoke = new ProxyFacade().runParallelWithCallablesJokeToDTO(threadPool);
+
+        timeParallel_Future = System.nanoTime() - start;
         System.out.println("Time Parallel (Future/Callables): " + ((timeParallel_Future) / 1_000_000) + " ms.");
 
-        for (JSONArray s : fetchedDataParallelFuture) {
+        for (JokeDTO s : fetchedDataParallelFutureJoke) {
             System.out.println(GSON.toJson(s));
             System.out.println("----------------------------------");
         }
