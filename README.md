@@ -58,11 +58,11 @@ On your droplet, either using workbench locally or via the SQL-client on the dro
  
 1. CONNECTION_STR: "jdbc:mysql://db:3306/startcode"
 <br>
-USER: "dev"
+`USER: "dev"`
 <br>
-PW: "ax2" 
+`PW: "ax2"` 
 <br>
-DEPLOYED: "PROD"
+`DEPLOYED: "PROD"`
 
 1. Save the file, rebuild and run using these commands:
 `docker-compose down`
