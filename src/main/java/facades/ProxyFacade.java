@@ -264,7 +264,7 @@ public class ProxyFacade {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Accept", "application/json");
-            con.addRequestProperty("User-Agent", "server");
+            //con.addRequestProperty("User-Agent", "server");
 //            con.setRequestProperty("Accept", "application/json;charset=UTF-8");
             int responseCode = con.getResponseCode();
             System.out.println("\nSending 'GET' request to URL : " + url);
