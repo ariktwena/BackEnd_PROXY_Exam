@@ -237,7 +237,7 @@ public class ProxyFacade {
             switch (url) {
                 case "https://api.chucknorris.io/jokes/random":
                     System.out.println("Vi er her");
-                    jokeDTO = new JokeDTO(object.getString("icon_url"), object.getString("value"));
+                    jokeDTO = new JokeDTO(object.getString("url"), object.getString("value"));
                     System.out.println(jokeDTO);
                     allJokeDTOs.add(jokeDTO);
                     break;
