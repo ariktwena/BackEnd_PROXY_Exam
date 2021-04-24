@@ -217,7 +217,7 @@ public class ProxyFacade {
             Callable<Joke> task = new Callable<Joke>() {
                 @Override
                 public Joke call() {
-                    Joke joke = new Joke(fetch.getUri(), makeFetchGetObject(fetch));
+                    Joke joke = new Joke(fetch.getUri(), makeFetchGetArray(fetch));
                     return joke;
                 }
             };
@@ -263,7 +263,7 @@ public class ProxyFacade {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Accept", "application/json");
-            //con.setRequestProperty("Accept", "application/json;charset=UTF-8");
+//            con.setRequestProperty("Accept", "application/json;charset=UTF-8");
             int responseCode = con.getResponseCode();
             System.out.println("\nSending 'GET' request to URL : " + url);
             System.out.println("Response Code : " + responseCode);
@@ -295,7 +295,8 @@ public class ProxyFacade {
             URL url = new URL(fetch.getUri());
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            con.setRequestProperty("Accept", "application/json;charset=UTF-8");
+            con.setRequestProperty("Accept", "application/json");
+//            con.setRequestProperty("Accept", "application/json;charset=UTF-8");
             Scanner scan = new Scanner(con.getInputStream());
             String jsonStr = null;
             if (scan.hasNext()) {
