@@ -14,9 +14,6 @@ public class Joke {
     private String url;
     private String JSON;
 
-    public Joke() {
-    }
-
     public Joke(String url, String JSON) {
         this.url = url;
         this.JSON = JSON;

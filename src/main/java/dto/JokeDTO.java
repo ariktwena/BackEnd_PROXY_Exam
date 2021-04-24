@@ -14,9 +14,6 @@ public class JokeDTO {
     private String url;
     private String joke;
 
-    public JokeDTO() {
-    }
-
     public JokeDTO(String url, String joke) {
         this.url = url;
         this.joke = joke;

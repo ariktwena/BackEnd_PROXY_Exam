@@ -208,8 +208,9 @@ public class ProxyFacade {
 
     public List<JokeDTO> runParallelWithCallablesJokeToDTO(ExecutorService threadPool) throws TimeoutException, InterruptedException, ExecutionException {
         List<Fetch> fetchList = new ArrayList();
-        fetchList.add(new Fetch("https://api.chucknorris.io/jokes/random"));
+//        fetchList.add(new Fetch("https://api.chucknorris.io/jokes/random"));
 //        fetchList.add(new Fetch("https://icanhazdadjoke.com/"));
+        fetchList.add(new Fetch("http://restcountries.eu/rest/v1/alpha?codes=de"));
 
         List<Future<Joke>> futures = new ArrayList<>();
 
@@ -247,6 +248,7 @@ public class ProxyFacade {
                     allJokeDTOs.add(jokeDTO);
                     break;
                 default:
+                System.out.println("Fisk");
                 // code block
             }
         }
@@ -285,9 +287,7 @@ public class ProxyFacade {
 
         } catch (MalformedURLException ex) {
             throw new WebApplicationException("This is a MalformedURLException", 404);
-        } 
-        catch (IOException ex) {
-            System.out.println(ex.getMessage());
+        } catch (IOException ex) {
             throw new WebApplicationException("This is a MalformedURLException", 404);
         }
     }
