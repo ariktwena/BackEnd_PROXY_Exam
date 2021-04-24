@@ -284,7 +284,9 @@ public class ProxyFacade {
 
         } catch (MalformedURLException ex) {
             throw new WebApplicationException("This is a MalformedURLException", 404);
-        } catch (IOException ex) {
+        } 
+        catch (IOException ex) {
+            System.out.println(ex.getMessage());
             throw new WebApplicationException("This is a MalformedURLException", 404);
         }
     }
