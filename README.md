@@ -63,9 +63,7 @@ On your droplet, either using workbench locally or via the SQL-client on the dro
 
 1. Save the file, rebuild and run using these commands:
 `docker-compose down`
-<br>
 `docker-compose build`
-<br>
 `docker-compose up -d`
 1. Back in a LOCAL terminal (git bash on Windows), in the root of the Java-project, type:
 `mvn clean test -Dremote.user=USER -Dremote.password=PW tomcat7:deploy`
