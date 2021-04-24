@@ -83,11 +83,8 @@ In this step we will let travis deploy our project if it builds and all tests ar
 1. Login to Travis using Github, and select your project on the dashboard
 1. Click "More options" and select "settings"
 1. Create two Environment Variables with names and values as sketched below (two steps)
-<br>
-REMOTE_USER :  XXXXXX
-<br>
-REMOTE_PW :   XXXXXXX
-<br>
+`REMOTE_USER :  XXXXXX`
+`REMOTE_PW :   XXXXXXX`
 These are the values you added in step 10-11, when we deployed via maven by yourself. In this part,   since you did it yourself, secrets were not an issue. On Travis it is. So this ensures that no one else can see your credentials
 1. Now make a small change to index.html (one that is easy to see after deploy)
 1. In a terminal, in the root of the project, type: `mvn clean test` (always build and test before you commit). If everything was fine, commit and push your changes
