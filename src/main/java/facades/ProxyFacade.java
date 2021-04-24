@@ -228,11 +228,11 @@ public class ProxyFacade {
         List<JokeDTO> allJokeDTOs = new ArrayList<>();
         //JokeDTO jokeDTO //VIGTIGT.... HVIS VI SKAL SAMMENSÆTTE FLERE JOKES TIL SAMME DTO, SÅ LAV NY DTO OG TILFØJ EFTER HVERT LOOP
         for (Future<Joke> joke : futures) {
-            String s = joke.get(2000, TimeUnit.MILLISECONDS).getJSON();
-            System.out.println(s);
-            JSONObject object = new JSONObject(s);
+            Joke theJoke = joke.get(2000, TimeUnit.MILLISECONDS);
+            System.out.println(theJoke.getJSON());
+            JSONObject object = new JSONObject(theJoke.getJSON());
             System.out.println(object);
-            String url = joke.get(2000, TimeUnit.MILLISECONDS).getUrl();
+            String url = theJoke.getUrl();
             JokeDTO jokeDTO;
             switch (url) {
                 case "https://api.chucknorris.io/jokes/random":
@@ -453,15 +453,15 @@ public class ProxyFacade {
         //TODO Add your parrallel calculation here 
         ExecutorService threadPool = Executors.newCachedThreadPool();
 
-//        List<JSONArray> fetchedDataParallelFuture = new ProxyFacade().runParallelWithCallablesMap(threadPool);
+        List<JSONArray> fetchedDataParallelFuture = new ProxyFacade().runParallelWithCallablesMap(threadPool);
 //
         long timeParallel_Future = System.nanoTime() - start;
-//        System.out.println("Time Parallel (Future/Callables): " + ((timeParallel_Future) / 1_000_000) + " ms.");
-//
-//        for (JSONArray s : fetchedDataParallelFuture) {
-//            System.out.println(GSON.toJson(s));
-//            System.out.println("----------------------------------");
-//        }
+        System.out.println("Time Parallel (Future/Callables): " + ((timeParallel_Future) / 1_000_000) + " ms.");
+
+        for (JSONArray s : fetchedDataParallelFuture) {
+            System.out.println(GSON.toJson(s));
+            System.out.println("----------------------------------");
+        }
 
         List<JokeDTO> fetchedDataParallelFutureJoke = new ProxyFacade().runParallelWithCallablesJokeToDTO(threadPool);
 
