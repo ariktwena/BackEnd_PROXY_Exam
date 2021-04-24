@@ -208,9 +208,9 @@ public class ProxyFacade {
 
     public List<JokeDTO> runParallelWithCallablesJokeToDTO(ExecutorService threadPool) throws TimeoutException, InterruptedException, ExecutionException {
         List<Fetch> fetchList = new ArrayList();
-//        fetchList.add(new Fetch("https://api.chucknorris.io/jokes/random"));
-//        fetchList.add(new Fetch("https://icanhazdadjoke.com/"));
-        fetchList.add(new Fetch("http://restcountries.eu/rest/v1/alpha?codes=de"));
+        fetchList.add(new Fetch("http://api.chucknorris.io/jokes/random"));
+        fetchList.add(new Fetch("http://icanhazdadjoke.com/"));
+//        fetchList.add(new Fetch("http://restcountries.eu/rest/v1/alpha?codes=de"));
 
         List<Future<Joke>> futures = new ArrayList<>();
 
