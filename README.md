@@ -38,13 +38,11 @@ Click the green Activate button, and select the new repository to be used with T
 9. Before you start make sure you have all these details ready (make a small document with the values FIRST)
 
 10. The user you have created on your droplet MySQL server, with GRANTS to all databases:
-<br>
 User:		_________
 Password	_________
 
 11. The user you have created to allow deployment on Tomcat 
 (On your droplet look in tomcat/tomcat-users.xml if you have forgot):
-<br>
 User:		_________
 Password	_________
 
@@ -65,7 +63,6 @@ USER: "dev"
 PW: "ax2" 
 <br>
 DEPLOYED: "PROD"
-<br>
 
 1. Save the file, rebuild and run using these commands:
 `docker-compose down`
