@@ -278,6 +278,7 @@ public class ProxyFacade {
                 }
 
                 //print result
+                System.out.println("THE RESPONSE");
                 System.out.println(response.toString());
                 return response.toString();
             }
