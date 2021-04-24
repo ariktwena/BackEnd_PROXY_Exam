@@ -235,13 +235,13 @@ public class ProxyFacade {
             String url =  joke.get(2000, TimeUnit.MILLISECONDS).getUrl();
             JokeDTO jokeDTO;
             switch (url) {
-                case "https://api.chucknorris.io/jokes/random":
+                case "http://api.chucknorris.io/jokes/random":
                     System.out.println("Vi er her");
                     jokeDTO = new JokeDTO(object.getString("icon_url"), object.getString("value"));
                     System.out.println(jokeDTO);
                     allJokeDTOs.add(jokeDTO);
                     break;
-                case "https://icanhazdadjoke.com/":
+                case "http://icanhazdadjoke.com/":
                     System.out.println("Nu er vi her");
                     jokeDTO = new JokeDTO(url, object.getString("joke"));
                     System.out.println(jokeDTO);
