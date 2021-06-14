@@ -27,7 +27,7 @@
 
 1. Initial Setup (Do not open the project in your IDE for anything below)
 
-2. Before you start verify that your local docker-environment is started and startcode_test is available
+2. Before you start verify that your local docker-environment is started and startcode_test is available 
 3. In a terminal (git bash on Windows) clone the project. CD into the project folder and delete the .git folder and Do "Your own" `git init`
 4. In the project folder run this: `mvn clean test`  (make sure your docker environment is up)
 5. When everything above is fine, create your OWN repository for the project on github. Commit and Push your code to this repo.
