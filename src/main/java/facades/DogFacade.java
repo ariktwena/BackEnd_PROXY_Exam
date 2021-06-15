@@ -395,7 +395,7 @@ public class DogFacade implements IDogFacade {
     public List<DogDTO> getAllDogs() throws WebApplicationException {
          EntityManager em = emf.createEntityManager();
         try {
-            TypedQuery<Dog> query = em.createQuery("SELECT d FROM Dog d JOIN d.owner o JOIN d.walkers w", Dog.class);
+            TypedQuery<Dog> query = em.createQuery("SELECT d FROM Dog d ", Dog.class);
             List<Dog> dogs = query.getResultList();
             System.out.println(dogs.size());
             ArrayList<DogDTO> dogDTOs = new ArrayList<>();
