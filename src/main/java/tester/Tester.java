@@ -5,6 +5,7 @@
  */
 package tester;
 
+import entities.Dog;
 import entities.Hobby;
 import entities.Job;
 import entities.Person;
@@ -31,25 +32,28 @@ public class Tester {
 //        Person person1 = new Person("Sam");
 //        job1.addPerson(person1);
 //        em.persist(job1);
-        Person person = em.find(Person.class, 1);
-        System.out.println(person);
-        
-        //Get Hobbie list
-        TypedQuery<Hobby> existingHobbies = em.createQuery("SELECT h FROM Hobby h JOIN h.persons p WHERE p.id = :id ", Hobby.class);
-        existingHobbies.setParameter("id", person.getId());
-        List<Hobby> hobbies = existingHobbies.getResultList();
-        System.out.println(hobbies);
-        System.out.println(person);
-        
-        //Get hobbie list for person, But needs ", fetch = FetchType.EAGER"
-        Query query = em.createQuery("SELECT p FROM Person p JOIN p.hobbies h WHERE p.id = :id", Person.class);
-        query.setParameter("id", person.getId());
-        person = (Person) query.getSingleResult();
-        System.out.println(person);
-        
-        //Remove
-        person.removeHobby(hobbies.get(0));
-        em.merge(person);
+//        Person person = em.find(Person.class, 1);
+//        System.out.println(person);
+//        
+//        //Get Hobbie list
+//        TypedQuery<Hobby> existingHobbies = em.createQuery("SELECT h FROM Hobby h JOIN h.persons p WHERE p.id = :id ", Hobby.class);
+//        existingHobbies.setParameter("id", person.getId());
+//        List<Hobby> hobbies = existingHobbies.getResultList();
+//        System.out.println(hobbies);
+//        System.out.println(person);
+//        
+//        //Get hobbie list for person, But needs ", fetch = FetchType.EAGER"
+//        Query query = em.createQuery("SELECT p FROM Person p JOIN p.hobbies h WHERE p.id = :id", Person.class);
+//        query.setParameter("id", person.getId());
+//        person = (Person) query.getSingleResult();
+//        System.out.println(person);
+//        
+//        //Remove
+//        person.removeHobby(hobbies.get(0));
+//        em.merge(person);
+
+        Dog dog = new Dog("Name 1", "Breed 1", "http", Dog.Gender.M, "28-04-1980");
+        em.persist(dog);
 
         em.getTransaction().commit();
     }
