@@ -44,6 +44,7 @@ public class DogTest {
     private Walker w2 = new Walker("Walker 2", "Address 2", "22222222");
     private Owner o1 = new Owner("Owner 1", "Address 1", "11111111");
     private Owner o2 = new Owner("Owner 2", "Address 2", "22222222");
+    private Owner o3 = new Owner("Owner 9", "Address 9", "99999999");
     
     public DogTest() {
     }
@@ -91,6 +92,8 @@ public class DogTest {
             d2.addWalkers(w2);
             em.merge(d2);
             
+            em.persist(o3);
+            
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -132,13 +135,8 @@ public class DogTest {
 
     @Test
     public void testConnectDogToOwner_US5() {
-        Owner o4 = new Owner("Owner 4", "Address 4", "44444444");
-        d1.getOwner().setName(o4.getName());
-        d1.getOwner().setAddress(o4.getAddress());
-        d1.getOwner().setPhone(o4.getPhone());
-        DogDTO dogDTO = new DogDTO(d1);
-        dogDTO = facade.editDog(dogDTO, d1.getId());
-        assertEquals("Owner 4", dogDTO.getOwner().getName());
+        DogDTO dogDTO = facade.connectOwnerWithDog(d1.getId(), o3.getId());
+        assertEquals("Owner 9", dogDTO.getOwner().getName());
         
     }
     

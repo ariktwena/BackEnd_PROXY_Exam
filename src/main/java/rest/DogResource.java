@@ -58,6 +58,19 @@ public class DogResource {
         return "{\"msg\":\"Hello World\"}";
     }
 
+    @RolesAllowed("admin")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getAllDogs() {
+        try {
+            List<DogDTO> list = FACADE.getAllDogs();
+            return GSON.toJson(list);
+        } catch (WebApplicationException ex) {
+            String errorString = "{\"code\": " + ex.getResponse().getStatus() + ", \"message\": \"" + ex.getMessage() + "\"}";
+            return errorString;
+        }
+    }
+    
     @Path("/walkers")
     @RolesAllowed("user")
     @GET
@@ -114,6 +127,21 @@ public class DogResource {
             return errorString;
         }
     }
+    
+    @Path("/owners")
+    @RolesAllowed("admin")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getAllOwners() {
+        try {
+            List<OwnerDTO> list = FACADE.getAllOwners();
+            return GSON.toJson(list);
+        } catch (WebApplicationException ex) {
+            String errorString = "{\"code\": " + ex.getResponse().getStatus() + ", \"message\": \"" + ex.getMessage() + "\"}";
+            return errorString;
+        }
+    }
+    
     
     @Path("/owners")
     @RolesAllowed("admin")
@@ -187,6 +215,21 @@ public class DogResource {
          try {
             WalkerSmallDTO walkerSmallDTO = GSON.fromJson(dog, WalkerSmallDTO.class); //manual conversion
             DogDTO dogDTO = FACADE.removeWalkerToDog(walkerSmallDTO, dogId);
+            return GSON.toJson(dogDTO);
+        } catch (WebApplicationException ex) {
+            String errorString = "{\"code\": " + ex.getResponse().getStatus() + ", \"message\": \"" + ex.getMessage() + "\"}";
+            return errorString;
+        }
+    }
+    
+    @Path("/{dogId}/owners/{ownerId}")
+    @RolesAllowed("admin")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String connectDogWithOwner(@PathParam("dogId") int dogId, @PathParam("ownerId") int ownerId) {
+        try {
+            DogDTO dogDTO = FACADE.connectOwnerWithDog(dogId, ownerId);
             return GSON.toJson(dogDTO);
         } catch (WebApplicationException ex) {
             String errorString = "{\"code\": " + ex.getResponse().getStatus() + ", \"message\": \"" + ex.getMessage() + "\"}";

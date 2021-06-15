@@ -37,5 +37,11 @@ public interface IDogFacade {
     public List<DogSmallDTO> getAllDogsByOwnerId(int OwnerId) throws WebApplicationException;
     
     public OwnerDTO addOwner(OwnerSmallDTO ownerSmallDTO) throws WebApplicationException;
+    
+    public List<DogDTO> getAllDogs() throws WebApplicationException;
+    
+    public List<OwnerDTO> getAllOwners() throws WebApplicationException;
+    
+    public DogDTO connectOwnerWithDog(int dogId, int ownerId) throws WebApplicationException;
         
 }

@@ -358,7 +358,7 @@ public class DogFacade implements IDogFacade {
 
     @Override
     public DogDTO removeWalkerToDog(WalkerSmallDTO walkerSmallDTO, int dogId) throws WebApplicationException {
-           EntityManager em = emf.createEntityManager();
+        EntityManager em = emf.createEntityManager();
         Dog dog = em.find(Dog.class, dogId);
 
         try {
@@ -380,6 +380,67 @@ public class DogFacade implements IDogFacade {
             }
 
             em.merge(dog);
+
+            em.getTransaction().commit();
+
+            return new DogDTO(dog);
+        } catch (RuntimeException ex) {
+            throw new WebApplicationException("Internal Server Problem. We are sorry for the inconvenience", 500);
+        } finally {
+            em.close();
+        }
+    }
+    
+     @Override
+    public List<DogDTO> getAllDogs() throws WebApplicationException {
+         EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Dog> query = em.createQuery("SELECT d FROM Dog d JOIN d.owner o JOIN d.walkers w", Dog.class);
+            List<Dog> dogs = query.getResultList();
+            System.out.println(dogs.size());
+            ArrayList<DogDTO> dogDTOs = new ArrayList<>();
+            for (Dog d : dogs) {
+                dogDTOs.add(new DogDTO(d));
+            }
+            return dogDTOs;
+        } catch (RuntimeException ex) {
+            throw new WebApplicationException("Internal Server Problem. We are sorry for the inconvenience", 500);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<OwnerDTO> getAllOwners() throws WebApplicationException {
+          EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Owner> query = em.createQuery("SELECT o FROM Owner o ", Owner.class);
+            List<Owner> owners = query.getResultList();
+            System.out.println(owners.size());
+            ArrayList<OwnerDTO> ownerDTOs = new ArrayList<>();
+            for (Owner w : owners) {
+                ownerDTOs.add(new OwnerDTO(w));
+            }
+            return ownerDTOs;
+        } catch (RuntimeException ex) {
+            throw new WebApplicationException("Internal Server Problem. We are sorry for the inconvenience", 500);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public DogDTO connectOwnerWithDog(int dogId, int ownerId) throws WebApplicationException {
+        EntityManager em = emf.createEntityManager();
+        Dog dog = em.find(Dog.class, dogId);
+        Owner owner = em.find(Owner.class, ownerId);
+
+        try {
+            em.getTransaction().begin();
+
+            owner.addDog(dog);
+
+            em.merge(owner);
 
             em.getTransaction().commit();
 
@@ -432,5 +493,7 @@ public class DogFacade implements IDogFacade {
             em.close();
         }
     }
+
+   
 
 }

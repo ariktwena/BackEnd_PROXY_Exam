@@ -34,6 +34,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -56,6 +57,7 @@ public class LoginEndpointTest {
     private Walker w2 = new Walker("Walker 2", "Address 2", "22222222");
     private Owner o1 = new Owner("Owner 1", "Address 1", "11111111");
     private Owner o2 = new Owner("Owner 2", "Address 2", "22222222");
+    private Owner o3 = new Owner("Owner 9", "Address 9", "99999999");
 
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
@@ -133,6 +135,8 @@ public class LoginEndpointTest {
 
             d2.addWalkers(w2);
             em.merge(d2);
+            
+            em.persist(o3);
 
             //System.out.println("Saved test data to database");
             em.getTransaction().commit();
@@ -354,40 +358,21 @@ public class LoginEndpointTest {
     @Test
     public void testConnectOwnerToDog_US5() {
 
-        OwnerSmallDTO ownerSmallDTO = new OwnerSmallDTO("Owner 11", "Address 11", "33333333");
-        String requestBody = GSON.toJson(ownerSmallDTO);
-
         login("admin", "test");
 
-        given()
+        String requestBody = GSON.toJson("");
+     
+
+        DogDTO dogDTO = given()
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
                 .and()
                 .body(requestBody)
-                .post("/dogs/owners")
+                .put("/dogs/{id1}/owners/{id2}", d2.getId(), o3.getId())
                 .then()
-                .assertThat()
-                .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("name", equalTo("Owner 11"));
-
-        Dog d3 = new Dog("Name 11", "Breed 11", "http", Dog.Gender.F, "28-04-1980");
-        Walker w3 = new Walker("Walker 11", "Address 11", "33333333");
-        Owner o3 = new Owner("Owner 11", "Address 11", "33333333");
-        d3.addWalkers(w3);
-        d3.setOwner(o3);
-        DogDTO dogDTO = new DogDTO(d3);
-        String requestBody1 = GSON.toJson(dogDTO);
-
-        given()
-                .contentType("application/json")
-                .header("x-access-token", securityToken)
-                .and()
-                .body(requestBody1)
-                .post("/dogs")
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("name", equalTo("Name 11"));
+                .extract().body().jsonPath().getObject(".", DogDTO.class);
+        
+        assertEquals("Owner 9", dogDTO.getOwner().getName());
 
     }
     
