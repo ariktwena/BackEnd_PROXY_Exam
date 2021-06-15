@@ -2,19 +2,26 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dto.DogDTO;
+import dto.OwnerSmallDTO;
 import dto.PersonDTO;
+import dto.WalkerSmallDTO;
+import entities.Dog;
 import entities.Hobby;
 import entities.Job;
 import entities.NickName;
+import entities.Owner;
 import entities.Person;
 import entities.User;
 import entities.Role;
+import entities.Walker;
 
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import java.net.URI;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
@@ -22,6 +29,8 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import org.junit.jupiter.api.AfterAll;
@@ -40,7 +49,14 @@ public class LoginEndpointTest {
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
-    
+
+    private Dog d1 = new Dog("Dog 1", "Breed 1", "image 1", Dog.Gender.M, "01-01-2001");
+    private Dog d2 = new Dog("Dog 2", "Breed 2", "image 2", Dog.Gender.F, "02-02-2002");
+    private Walker w1 = new Walker("Walker 1", "Address 1", "11111111");
+    private Walker w2 = new Walker("Walker 2", "Address 2", "22222222");
+    private Owner o1 = new Owner("Owner 1", "Address 1", "11111111");
+    private Owner o2 = new Owner("Owner 2", "Address 2", "22222222");
+
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
         return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
@@ -63,7 +79,7 @@ public class LoginEndpointTest {
     public static void closeTestServer() {
         //Don't forget this, if you called its counterpart in @BeforeAll
         EMF_Creator.endREST_TestWithDB();
-        
+
         httpServer.shutdownNow();
     }
 
@@ -92,12 +108,32 @@ public class LoginEndpointTest {
             em.persist(user);
             em.persist(admin);
             em.persist(both);
-            
-            em.createNamedQuery("Person.deleteAllRows").executeUpdate();
-            em.createNamedQuery("Job.deleteAllRows").executeUpdate();
-            em.createNamedQuery("NickName.deleteAllRows").executeUpdate();
-            em.createNamedQuery("Hobby.deleteAllRows").executeUpdate();
-            
+
+            em.createNamedQuery("Dog.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Owner.deleteAllRows").executeUpdate();
+            em.createNamedQuery("Walker.deleteAllRows").executeUpdate();
+
+            em.persist(d1);
+            em.persist(d2);
+
+            em.persist(o1);
+            em.persist(o2);
+
+            o1.addDog(d1);
+            em.merge(o1);
+
+            o2.addDog(d2);
+            em.merge(o2);
+
+            em.persist(w1);
+            em.persist(w2);
+
+            d1.addWalkers(w1);
+            em.merge(d1);
+
+            d2.addWalkers(w2);
+            em.merge(d2);
+
             //System.out.println("Saved test data to database");
             em.getTransaction().commit();
         } finally {
@@ -235,43 +271,183 @@ public class LoginEndpointTest {
                 .body("code", equalTo(403))
                 .body("message", equalTo("Not authenticated - do login"));
     }
-    
-    /** Custome security test **/
-     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    
+
+    /**
+     * Custome security test *
+     */
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
     @Test
-     public void testGetAllPersonsSecurity() {
-        Person p1 = new Person("Person 1");
-        Job j1 = new Job("Job 1");
-        NickName n1 = new NickName("Nickname 1");
-        Hobby h1 = new Hobby("Hobby 1");
-        p1.setJob(j1);
-        p1.setNickName(n1);
-        p1.addHobby(h1);
-        PersonDTO personDTO = new PersonDTO(p1);
-        String requestBody = GSON.toJson(personDTO);
+    public void testGetAllWalkers_US1() {
+
+        login("user", "test");
 
         given()
                 .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .get("/dogs/walkers")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", hasItems("Walker 1", "Walker 2"));
+    }
+
+    @Test
+    public void testGetAllDogByOwnerId_US2() {
+
+        login("user", "test");
+
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .get("/dogs/{id}/owners", o1.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", hasItems(d1.getName()))
+                .body("name", hasItems("Dog 1"));
+
+    }
+
+    @Test
+    public void testGetAllWalkersByDogId_US3() {
+
+        login("user", "test");
+
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .get("/dogs/{id}/walkers", d1.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", hasItems(d1.getWalkers().get(0).getName()))
+                .body("name", hasItems("Walker 1"));
+
+    }
+
+    @Test
+    public void testAddDog__US4() {
+        Dog d3 = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
+        Walker w3 = new Walker("Walker 3", "Address 3", "33333333");
+        Owner o3 = new Owner("Owner 3", "Address 3", "33333333");
+        d3.addWalkers(w3);
+        d3.setOwner(o3);
+        DogDTO dogDTO = new DogDTO(d3);
+        System.out.println(dogDTO);
+        String requestBody = GSON.toJson(dogDTO);
+
+        login("admin", "test");
+
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
                 .and()
                 .body(requestBody)
-                .when()
-                .post("/persons")
+                .post("/dogs")
                 .then()
+                .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", equalTo("Name 10"));
+    }
+
+    @Test
+    public void testConnectOwnerToDog_US5() {
+
+        OwnerSmallDTO ownerSmallDTO = new OwnerSmallDTO("Owner 11", "Address 11", "33333333");
+        String requestBody = GSON.toJson(ownerSmallDTO);
+
+        login("admin", "test");
+
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
                 .and()
-                .body("name", equalTo("Person 1"));
-         
-        login("user", "test");
+                .body(requestBody)
+                .post("/dogs/owners")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", equalTo("Owner 11"));
+
+        Dog d3 = new Dog("Name 11", "Breed 11", "http", Dog.Gender.F, "28-04-1980");
+        Walker w3 = new Walker("Walker 11", "Address 11", "33333333");
+        Owner o3 = new Owner("Owner 11", "Address 11", "33333333");
+        d3.addWalkers(w3);
+        d3.setOwner(o3);
+        DogDTO dogDTO = new DogDTO(d3);
+        String requestBody1 = GSON.toJson(dogDTO);
+
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .and()
+                .body(requestBody1)
+                .post("/dogs")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", equalTo("Name 11"));
+
+    }
+    
+    
+    @Test
+    public void testEditDog_US6() {
+
+        login("admin", "test");
+
+        d1.setBreed("New Breed");
+        DogDTO dogDTO = new DogDTO(d1);
+        String requestBody = GSON.toJson(dogDTO);
         
         given()
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
-                .get("/persons/security")
+                .and()
+                .body(requestBody)
+                .put("/dogs/{id}", d1.getId())
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("name", hasItems("Person 1"));
+                .body("breed", equalTo("New Breed"));
+    }
+    
+    @Test
+    public void testDeleteDog_US7() {
+
+        login("admin", "test");
+
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .and()
+                .delete("/dogs/{id}", d1.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("status", equalTo("removed"));
+
+    }
+    
+       @Test
+    public void testExceptions() {
+        Dog d3 = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
+        DogDTO dogDTO = new DogDTO(d3);
+        String requestBody = GSON.toJson(dogDTO);
+
+        login("admin", "test");
+
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .and()
+                .body(requestBody)
+                .post("/dogs")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("message", equalTo("Walkers are empty"));
     }
 
 }

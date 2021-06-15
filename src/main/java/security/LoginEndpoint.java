@@ -33,7 +33,7 @@ import utils.SetupTestUsers;
 @Path("login")
 public class LoginEndpoint {
 
-    public static final int TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //30 min
+    public static final int TOKEN_EXPIRE_TIME = 1000 * 60 * (60 * 96) ; //30 = 30 min, 60min * 96timer
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     public static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
 

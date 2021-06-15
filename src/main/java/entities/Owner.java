@@ -5,7 +5,7 @@
  */
 package entities;
 
-import dto.WalkerSmallDTO;
+import dto.OwnerSmallDTO;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -27,13 +26,13 @@ import javax.persistence.Table;
  * @author Tweny
  */
 @Entity
-@Table(name = "walker")
+@Table(name = "owner")
 @NamedQueries({
-    @NamedQuery(name = "Walker.deleteAllRows", query = "DELETE from Walker"),
-    @NamedQuery(name = "Walker.getAllRows", query = "SELECT w from Walker w"),
-    @NamedQuery(name = "Walker.getWalker", query = "SELECT w from Walker w WHERE w = :w")
+    @NamedQuery(name = "Owner.deleteAllRows", query = "DELETE from Owner"),
+    @NamedQuery(name = "Owner.getAllRows", query = "SELECT o from Owner o"),
+    @NamedQuery(name = "Owner.getOwner", query = "SELECT o from Owner o WHERE o.name = :d")
 })
-public class Walker implements Serializable {
+public class Owner implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -49,53 +48,53 @@ public class Walker implements Serializable {
     
     @Column(name = "phone", length = 8, nullable = false, unique = true)
     private String phone;
-    
-    
-    //***************Many to Many****************
-    //mappedBy fortæller vilken fremmednøgle/variablenavn den skal mappes til i SwimStyle objektet (private List<Person> persons)
-    //Husk at lave en this.persons = new ArrayList<Person>(); i konstruktøren
-    @ManyToMany(mappedBy = "walkers", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER) 
+
+               //***************One to Many****************
+    //mappedBy fortæller vilken fremmednøgle/variablenavn den skal mappes til i Fee objektet (private Person person)
+    //Det er Person der ejer relationen, da det er ONE der ejer en ONE-TO-MANY relation
+    //Husk at lave en this.fees = new ArrayList<Fee>(); i konstruktøren
+    @OneToMany(mappedBy = "owner", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER) //Der findes også CascadeType.REMOVE hvis den må slette uden der sker noget
     private List<Dog> dogs;
 
     public void addDog(Dog dog) {
-        if(dog != null){
+        if (dog != null) {
+            dog.setOwner(this);
             this.dogs.add(dog);
-            //Vi tilføjer denner Person til den aktuelle swimStyle
-            dog.getWalkers().add(this);
         }
     }
     
-     public void removeDog(Dog dog) {
-        if(dog != null){
-            this.dogs.remove(dog);
-            //Vi tilføjer denner Person til den aktuelle swimStyle
-            dog.getWalkers().remove(this);
-        }
-    }
-    
+//    public void removePerson(Person person) {
+//        if (person != null) {
+//            this.persons.remove(person);
+//        }
+//    }
+
     public List<Dog> getDogs() {
         return dogs;
     }
-    //*******************************************
+    //*****************************************
     
-    public Walker() {
+    
+    
+    public Owner() {
     }
 
-    public Walker(String name, String address, String phone) {
+    public Owner(String name, String address, String phone) {
         this.name = name;
         this.address = address;
         this.phone = phone;
         this.dogs = new ArrayList<Dog>();
     }
     
-    public Walker(WalkerSmallDTO walkerSmallDTO) {
+    public Owner(OwnerSmallDTO ownerSmallDTO) {
         this.id = -1;
-        this.name = walkerSmallDTO.getName();
-        this.address = walkerSmallDTO.getAddress();
-        this.phone = walkerSmallDTO.getPhone();
+        this.name = ownerSmallDTO.getName();
+        this.address = ownerSmallDTO.getAddress();
+        this.phone = ownerSmallDTO.getPhone();
         this.dogs = new ArrayList<Dog>();
     }
-
+    
+    
     public int getId() {
         return id;
     }
@@ -128,6 +127,6 @@ public class Walker implements Serializable {
         this.phone = phone;
     }
 
- 
     
+
 }

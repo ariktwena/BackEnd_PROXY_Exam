@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,6 +20,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -65,17 +68,39 @@ public class Dog implements Serializable {
     
      //***************Many to One hvor vi peger tilbage****************
     @ManyToOne //(fetch = FetchType.EAGER)
-    private Walker walker;
+    private Owner owner;
 
-    public void setWalker(Walker walker) {
-        this.walker = walker;
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 
-    public Walker getWalker() {
-        return walker;
+    public Owner getOwner() {
+        return owner;
     }
     //***************************************************************
 
+    //***************Many to Many****************
+    //Husk at lave en this.persons = new ArrayList<Person>(); i konstruktøren
+    //Man behøver kun at anføre @ManyToMany her
+    @ManyToMany
+    private List<Walker> walkers;
+
+    public void addWalkers(Walker walker) {
+        if(walker != null){
+            this.walkers.add(walker);
+        }  
+    }
+    
+    public void removeWalkers(Walker walker) {
+        if(walker != null){
+            this.walkers.remove(walker);
+        }  
+    }
+    
+    public List<Walker> getWalkers() {
+        return walkers;
+    }
+    //*******************************************
     
     public Dog() {
     }
@@ -86,7 +111,8 @@ public class Dog implements Serializable {
         this.image = image;
         this.gender = gender;
         this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        this.walker = null;
+        this.walkers = new ArrayList<Walker>();
+        this.owner = null;
     }
     
     public Dog(DogDTO dogDTO) {
@@ -94,9 +120,10 @@ public class Dog implements Serializable {
         this.name = dogDTO.getName();
         this.breed = dogDTO.getBreed();
         this.image = dogDTO.getImage();
-        this.gender = dogDTO.getGender();
-        this.birthdate = LocalDate.parse(dogDTO.getBirthdate(), DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        this.walker = null;
+        this.gender = dogDTO.getGender().equals("male") ? Gender.M : Gender.F;
+        this.birthdate = dogDTO.getBirthdate();
+        this.walkers = new ArrayList<Walker>();
+        this.owner = null;
     }
 
     public int getId() {
@@ -143,8 +170,8 @@ public class Dog implements Serializable {
         return birthdate;
     }
 
-    public void setBirthdate(String birthdate) {
-        this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+    public void setBirthdate(LocalDate birthdate) {
+        this.birthdate = birthdate;
     }
 
   

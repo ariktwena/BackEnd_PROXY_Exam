@@ -6,6 +6,7 @@
 package dto;
 
 import entities.Walker;
+import java.util.Objects;
 
 /**
  *
@@ -74,6 +75,37 @@ public class WalkerSmallDTO {
         this.phone = phone;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + this.id;
+        hash = 89 * hash + Objects.hashCode(this.phone);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final WalkerSmallDTO other = (WalkerSmallDTO) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (!Objects.equals(this.phone, other.phone)) {
+            return false;
+        }
+        return true;
+    }
+
+    
+    
     @Override
     public String toString() {
         return "WalkerSmallDTO{" + "id=" + id + ", name=" + name + ", address=" + address + ", phone=" + phone + '}';

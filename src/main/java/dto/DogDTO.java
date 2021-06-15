@@ -6,9 +6,12 @@
 package dto;
 
 import entities.Dog;
+import entities.Walker;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,14 +21,15 @@ import javax.persistence.Enumerated;
  * @author Tweny
  */
 public class DogDTO {
-    
+
     private int id;
     private String name;
     private String breed;
     private String image;
     private Dog.Gender gender;
-    private String birthdate;
-    private WalkerSmallDTO walker;
+    private LocalDate birthdate;
+    private OwnerSmallDTO owner;
+    private List<WalkerSmallDTO> walkers;
 
     public DogDTO() {
     }
@@ -36,46 +40,61 @@ public class DogDTO {
         this.breed = dog.getBreed();
         this.image = dog.getImage();
         this.gender = dog.getGender();
-        this.birthdate = dog.getBirthdate().format(DateTimeFormatter.ISO_DATE);
-        this.walker = dog.getWalker() != null ? new WalkerSmallDTO(dog.getWalker()) : null;
+        this.birthdate = dog.getBirthdate();
+        this.owner = dog.getOwner() != null ? new OwnerSmallDTO(dog.getOwner()) : null;
+        this.walkers = dog.getWalkers() != null ? createWalkerSmallDTOList(dog.getWalkers()) : new ArrayList<>();
     }
-    
-    public DogDTO(int id, String name, String breed, String image, Dog.Gender gender, String birthdate, WalkerSmallDTO walker) {
+
+    public DogDTO(int id, String name, String breed, String image, String gender, String birthdate, OwnerSmallDTO owner, List<WalkerSmallDTO> walkers) {
         this.id = id;
         this.name = name;
         this.breed = breed;
         this.image = image;
-        this.gender = gender;
-        this.birthdate = birthdate;
-        this.walker = walker;
+        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        this.owner = owner;
+        this.walkers = walkers;
     }
-    
-    public DogDTO(String name, String breed, String image, Dog.Gender gender, String birthdate, WalkerSmallDTO walker) {
+
+    public DogDTO(String name, String breed, String image, String gender, String birthdate, OwnerSmallDTO owner, List<WalkerSmallDTO> walkers) {
         this.id = -1;
         this.name = name;
         this.breed = breed;
         this.image = image;
-        this.gender = gender;
-        this.birthdate = birthdate;
-        this.walker = walker;
+        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));;
+        this.owner = owner;
+        this.walkers = walkers;
     }
-    
-    public DogDTO(int id, String name, String breed, String image, Dog.Gender gender, String birthdate) {
+
+    public DogDTO(int id, String name, String breed, String image, String gender, String birthdate) {
         this.id = id;
         this.name = name;
         this.breed = breed;
         this.image = image;
-        this.gender = gender;
-        this.birthdate = birthdate;
+        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));;
+        this.owner = null;
+        this.walkers = new ArrayList<WalkerSmallDTO>();
     }
-    
-    public DogDTO(String name, String breed, String image, Dog.Gender gender, String birthdate) {
+
+    public DogDTO(String name, String breed, String image, String gender, String birthdate) {
         this.id = -1;
         this.name = name;
         this.breed = breed;
         this.image = image;
-        this.gender = gender;
-        this.birthdate = birthdate;
+        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));;
+        this.owner = null;
+        this.walkers = new ArrayList<WalkerSmallDTO>();
+    }
+
+    private List<WalkerSmallDTO> createWalkerSmallDTOList(List<Walker> walkers) {
+        List<WalkerSmallDTO> walkerSmallDTOs = new ArrayList<>();
+        for (Walker w : walkers) {
+            walkerSmallDTOs.add(new WalkerSmallDTO(w));
+        }
+        return walkerSmallDTOs;
     }
 
     public int getId() {
@@ -114,29 +133,43 @@ public class DogDTO {
         return gender;
     }
 
-    public void setGender(Dog.Gender gender) {
-        this.gender = gender;
+    public void setGender(String gender) {
+        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
     }
 
-    public String getBirthdate() {
+    public LocalDate getBirthdate() {
         return birthdate;
     }
 
     public void setBirthdate(String birthdate) {
-        this.birthdate = birthdate;
+        this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));;
     }
 
-    public WalkerSmallDTO getWalker() {
-        return walker;
+    public OwnerSmallDTO getOwner() {
+        return owner;
     }
 
-    public void setWalker(WalkerSmallDTO walker) {
-        this.walker = walker;
+    public void setOwner(OwnerSmallDTO owner) {
+        this.owner = owner;
     }
+
+    public List<WalkerSmallDTO> getWalkers() {
+        return walkers;
+    }
+
+    public void setWalkers(List<WalkerSmallDTO> walkers) {
+        this.walkers = walkers;
+    }
+    
+      public void addWalkerSmallDTO(WalkerSmallDTO walkerSmallDTO) {
+        walkers.add(walkerSmallDTO);
+    }
+    
+    
 
     @Override
     public String toString() {
-        return "DogDTO{" + "id=" + id + ", name=" + name + ", breed=" + breed + ", image=" + image + ", gender=" + gender + ", birthdate=" + birthdate + ", walker=" + walker + '}';
+        return "DogDTO{" + "id=" + id + ", name=" + name + ", breed=" + breed + ", image=" + image + ", gender=" + gender + ", birthdate=" + birthdate + ", walkers=" + walkers + '}';
     }
-      
+
 }
