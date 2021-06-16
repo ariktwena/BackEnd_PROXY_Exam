@@ -493,7 +493,4 @@ public class DogFacade implements IDogFacade {
             em.close();
         }
     }
-
-   
-
 }
