@@ -113,12 +113,12 @@ public class DogTest {
     
     @Test
     public void testGetAllDogByOwnerId_US2() {
-        assertEquals(1, facade.getAllDogsByOwnerId(o1.getId()).size(), "Expects two rows in the database");
+        assertEquals(1, facade.getAllDogsByOwnerId(o1.getId()).size(), "Expects one rows in the database");
     }
     
     @Test
     public void testGetAllWalkersByDogId_US3() {
-        assertEquals(1, facade.getAllWalkersByDogId(d1.getId()).size(), "Expects two rows in the database");
+        assertEquals(1, facade.getAllWalkersByDogId(d1.getId()).size(), "Expects one rows in the database");
     }
     
     @Test
@@ -167,7 +167,7 @@ public class DogTest {
     }
 
     @Test
-    public void testEditPersonExceptionJob() {
+    public void testException() {
         Dog d4 = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
         DogDTO dogDTO = new DogDTO(d4);
         try {

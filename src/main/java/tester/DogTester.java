@@ -31,7 +31,7 @@ public class DogTester {
         EntityManagerFactory emf = EMF_Creator.createEntityManagerFactory();
         DogFacade FACADE = DogFacade.getFacade(emf);
 
-        DogDTO ddto = new DogDTO("Name 10", "Breed 10", "http", "male", "28-04-1980");
+        DogDTO ddto = new DogDTO("Name 10", "Breed 10", "http", "M", "28-04-1980"); 
         WalkerSmallDTO walkerSmallDTO = new WalkerSmallDTO("Walker 10", "Address 10", "Phone 10");
         OwnerSmallDTO ownerSmallDTO = new OwnerSmallDTO("Owner new 10", "Address 10", "Phone 20");
         ddto.addWalkerSmallDTO(walkerSmallDTO);

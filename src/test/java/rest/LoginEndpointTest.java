@@ -135,7 +135,7 @@ public class LoginEndpointTest {
 
             d2.addWalkers(w2);
             em.merge(d2);
-            
+
             em.persist(o3);
 
             //System.out.println("Saved test data to database");
@@ -358,10 +358,11 @@ public class LoginEndpointTest {
     @Test
     public void testConnectOwnerToDog_US5() {
 
+        assertEquals("Owner 2", d2.getOwner().getName());
+
         login("admin", "test");
 
         String requestBody = GSON.toJson("");
-     
 
         DogDTO dogDTO = given()
                 .contentType("application/json")
@@ -371,12 +372,11 @@ public class LoginEndpointTest {
                 .put("/dogs/{id1}/owners/{id2}", d2.getId(), o3.getId())
                 .then()
                 .extract().body().jsonPath().getObject(".", DogDTO.class);
-        
+
         assertEquals("Owner 9", dogDTO.getOwner().getName());
 
     }
-    
-    
+
     @Test
     public void testEditDog_US6() {
 
@@ -385,7 +385,7 @@ public class LoginEndpointTest {
         d1.setBreed("New Breed");
         DogDTO dogDTO = new DogDTO(d1);
         String requestBody = GSON.toJson(dogDTO);
-        
+
         given()
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
@@ -397,7 +397,7 @@ public class LoginEndpointTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("breed", equalTo("New Breed"));
     }
-    
+
     @Test
     public void testDeleteDog_US7() {
 
@@ -414,8 +414,8 @@ public class LoginEndpointTest {
                 .body("status", equalTo("removed"));
 
     }
-    
-       @Test
+
+    @Test
     public void testExceptions() {
         Dog d3 = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
         DogDTO dogDTO = new DogDTO(d3);
@@ -433,6 +433,70 @@ public class LoginEndpointTest {
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("message", equalTo("Walkers are empty"));
+    }
+
+    @Test
+    public void testIntegration() {
+        Dog d = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
+        Walker w = new Walker("Walker 3", "Address 3", "33333333");
+        Owner o = new Owner("Owner 3", "Address 3", "33333333");
+        d.addWalkers(w);
+        d.setOwner(o);
+        DogDTO dogDTO = new DogDTO(d);
+        String requestBody = GSON.toJson(dogDTO);
+
+        login("admin", "test");
+
+        dogDTO = given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .and()
+                .body(requestBody)
+                .post("/dogs")
+                .then()
+                .extract().body().jsonPath().getObject(".", DogDTO.class);
+        
+        assertEquals("Name 10", dogDTO.getName());
+        
+        String requestBody1 = GSON.toJson("");
+        
+        //Connect dog with new owner
+        dogDTO = given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .and()
+                .body(requestBody1)
+                .put("/dogs/{id1}/owners/{id2}", dogDTO.getId(), o3.getId())
+                .then()
+                .extract().body().jsonPath().getObject(".", DogDTO.class);
+
+        assertEquals("Owner 9", dogDTO.getOwner().getName());
+
+        //Edit dog
+        dogDTO.setBreed("New Breed");
+        String requestBody2 = GSON.toJson(dogDTO);
+        
+        dogDTO = given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .and()
+                .body(requestBody2)
+                .put("/dogs/{id}", dogDTO.getId())
+                .then()
+                .extract().body().jsonPath().getObject(".", DogDTO.class);
+
+        assertEquals("New Breed", dogDTO.getBreed());
+
+        //Delete dog
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .and()
+                .delete("/dogs/{id}", dogDTO.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("status", equalTo("removed"));
     }
 
 }

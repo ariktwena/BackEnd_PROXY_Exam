@@ -42,7 +42,7 @@ public class DogSmallDTO {
         this.name = name;
         this.breed = breed;
         this.image = image;
-        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.gender = gender.equals("M") ? Dog.Gender.M : Dog.Gender.F;
         this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
 
@@ -51,7 +51,7 @@ public class DogSmallDTO {
         this.name = name;
         this.breed = breed;
         this.image = image;
-        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.gender = gender.equals("M") ? Dog.Gender.M : Dog.Gender.F;
         this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
     }
 
@@ -92,7 +92,7 @@ public class DogSmallDTO {
     }
 
     public void setGender(String gender) {
-        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.gender = gender.equals("M") ? Dog.Gender.M : Dog.Gender.F;
     }
 
     public LocalDate getBirthdate() {

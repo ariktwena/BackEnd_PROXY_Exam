@@ -50,7 +50,7 @@ public class DogDTO {
         this.name = name;
         this.breed = breed;
         this.image = image;
-        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.gender = gender.equals("M") ? Dog.Gender.M : Dog.Gender.F;
         this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));
         this.owner = owner;
         this.walkers = walkers;
@@ -61,7 +61,7 @@ public class DogDTO {
         this.name = name;
         this.breed = breed;
         this.image = image;
-        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.gender = gender.equals("M") ? Dog.Gender.M : Dog.Gender.F;
         this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));;
         this.owner = owner;
         this.walkers = walkers;
@@ -72,7 +72,7 @@ public class DogDTO {
         this.name = name;
         this.breed = breed;
         this.image = image;
-        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.gender = gender.equals("M") ? Dog.Gender.M : Dog.Gender.F;
         this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));;
         this.owner = null;
         this.walkers = new ArrayList<WalkerSmallDTO>();
@@ -83,7 +83,7 @@ public class DogDTO {
         this.name = name;
         this.breed = breed;
         this.image = image;
-        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.gender = gender.equals("M") ? Dog.Gender.M : Dog.Gender.F;
         this.birthdate = LocalDate.parse(birthdate, DateTimeFormatter.ofPattern("dd-MM-yyyy"));;
         this.owner = null;
         this.walkers = new ArrayList<WalkerSmallDTO>();
@@ -134,7 +134,7 @@ public class DogDTO {
     }
 
     public void setGender(String gender) {
-        this.gender = gender.equals("male") ? Dog.Gender.M : Dog.Gender.F;
+        this.gender = gender.equals("M") ? Dog.Gender.M : Dog.Gender.F;
     }
 
     public LocalDate getBirthdate() {

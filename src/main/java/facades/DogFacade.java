@@ -125,6 +125,7 @@ public class DogFacade implements IDogFacade {
         if (dog.getId() > -1) {
             dog = em.find(Dog.class, dog.getId());
         }
+//        Dog dog = new Dog(dogDTO); 
 
         Owner owner = doesOwnerExist(dogDTO.getOwner());
         if (owner.getId() > -1) {
@@ -200,6 +201,7 @@ public class DogFacade implements IDogFacade {
         try {
             em.getTransaction().begin();
 
+//            dogInDB.setName(dogDTO.getName());
             dogInDB.setBreed(dogDTO.getBreed());
             dogInDB.setImage(dogDTO.getImage());
             dogInDB.setGender(dogDTO.getGender());

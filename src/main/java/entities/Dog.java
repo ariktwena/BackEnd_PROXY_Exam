@@ -51,6 +51,7 @@ public class Dog implements Serializable {
     private int id;
 
     @Column(name = "name", length = 255, nullable = false, unique = true)
+//    @Column(name = "name", length = 255, nullable = false, unique = false)
     private String name;
 
     @Column(name = "breed", length = 255, nullable = false, unique = false)
@@ -116,11 +117,11 @@ public class Dog implements Serializable {
     }
     
     public Dog(DogDTO dogDTO) {
-        this.id = -1;
+        this.id = dogDTO.getId();
         this.name = dogDTO.getName();
         this.breed = dogDTO.getBreed();
         this.image = dogDTO.getImage();
-        this.gender = dogDTO.getGender().equals("male") ? Gender.M : Gender.F;
+        this.gender = dogDTO.getGender();
         this.birthdate = dogDTO.getBirthdate();
         this.walkers = new ArrayList<Walker>();
         this.owner = null;
