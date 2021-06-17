@@ -124,18 +124,13 @@ public class DogTest {
     }
     
     @Test
-    public void testAddDog_US4() {
-        DogDTO dogDTO = new DogDTO("Name 10", "Breed 10", "http", "M", "28-04-1980");
-        WalkerSmallDTO w3 = new WalkerSmallDTO("Walker 3", "Address 3", "33333333");
-        OwnerSmallDTO o = new OwnerSmallDTO("Owner 3", "Address 3", "33333333");
-        dogDTO.addWalkerSmallDTO(w3);
-        dogDTO.setOwner(o);   
-//        Dog d3 = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
-//        Walker w3 = new Walker("Walker 3", "Address 3", "33333333");
-//        Owner o3 = new Owner("Owner 3", "Address 3", "33333333");
-//        d3.addWalkers(w3);
-//        d3.setOwner(o3); 
-//        DogDTO dogDTO = new DogDTO(d3); 
+    public void testAddDog_US4() {   
+        Dog d3 = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
+        Walker w3 = new Walker("Walker 3", "Address 3", "33333333");
+        Owner o3 = new Owner("Owner 3", "Address 3", "33333333");
+        d3.addWalkers(w3);
+        d3.setOwner(o3); 
+        DogDTO dogDTO = new DogDTO(d3); 
         System.out.println(dogDTO);
         dogDTO = facade.addDog(dogDTO);
         assertEquals("Name 10", dogDTO.getName());
@@ -150,17 +145,12 @@ public class DogTest {
     
      @Test
     public void testUpdateInformation_US6() {
-        DogDTO dogDTO = new DogDTO("Name 10", "Breed 10", "http", "M", "28-04-1980");
-        WalkerSmallDTO w3 = new WalkerSmallDTO("Walker 3", "Address 3", "33333333");
-        OwnerSmallDTO o = new OwnerSmallDTO("Owner 3", "Address 3", "33333333");
-        dogDTO.addWalkerSmallDTO(w3);
-        dogDTO.setOwner(o);
-//        Dog d3 = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
-//        Walker w3 = new Walker("Walker 3", "Address 3", "33333333");
-//        Owner o3 = new Owner("Owner 3", "Address 3", "33333333");
-//        d3.addWalkers(w3);
-//        d3.setOwner(o3); 
-//        DogDTO dogDTO = new DogDTO(d3);     
+        Dog d3 = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
+        Walker w3 = new Walker("Walker 3", "Address 3", "33333333");
+        Owner o3 = new Owner("Owner 3", "Address 3", "33333333");
+        d3.addWalkers(w3);
+        d3.setOwner(o3); 
+        DogDTO dogDTO = new DogDTO(d3);     
         dogDTO = facade.addDog(dogDTO);
         assertEquals("Name 10", dogDTO.getName());
         

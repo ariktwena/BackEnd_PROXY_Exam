@@ -332,17 +332,12 @@ public class LoginEndpointTest {
 
     @Test
     public void testAddDog__US4() {
-        DogDTO dogDTO = new DogDTO("Name 10", "Breed 10", "http", "M", "28-04-1980");
-        WalkerSmallDTO w3 = new WalkerSmallDTO("Walker 3", "Address 3", "33333333");
-        OwnerSmallDTO o3 = new OwnerSmallDTO("Owner 3", "Address 3", "33333333");
-        dogDTO.addWalkerSmallDTO(w3);
-        dogDTO.setOwner(o3);
-//        Dog d3 = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
-//        Walker w3 = new Walker("Walker 3", "Address 3", "33333333");
-//        Owner o3 = new Owner("Owner 3", "Address 3", "33333333");
-//        d3.addWalkers(w3);
-//        d3.setOwner(o3);
-//        DogDTO dogDTO = new DogDTO(d3);
+        Dog d3 = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
+        Walker w3 = new Walker("Walker 3", "Address 3", "33333333");
+        Owner o3 = new Owner("Owner 3", "Address 3", "33333333");
+        d3.addWalkers(w3);
+        d3.setOwner(o3);
+        DogDTO dogDTO = new DogDTO(d3);
         System.out.println(dogDTO);
         String requestBody = GSON.toJson(dogDTO);
 
@@ -442,17 +437,12 @@ public class LoginEndpointTest {
 
     @Test
     public void testIntegration() {
-        DogDTO dogDTO = new DogDTO("Name 10", "Breed 10", "http", "M", "28-04-1980");
-        WalkerSmallDTO w3 = new WalkerSmallDTO("Walker 3", "Address 3", "33333333");
-        OwnerSmallDTO o = new OwnerSmallDTO("Owner 3", "Address 3", "33333333");
-        dogDTO.addWalkerSmallDTO(w3);
-        dogDTO.setOwner(o);
-//        Dog d = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
-//        Walker w = new Walker("Walker 3", "Address 3", "33333333");
-//        Owner o = new Owner("Owner 3", "Address 3", "33333333");
-//        d.addWalkers(w);
-//        d.setOwner(o);
-//        DogDTO dogDTO = new DogDTO(d);
+        Dog d = new Dog("Name 10", "Breed 10", "http", Dog.Gender.F, "28-04-1980");
+        Walker w = new Walker("Walker 3", "Address 3", "33333333");
+        Owner o = new Owner("Owner 3", "Address 3", "33333333");
+        d.addWalkers(w);
+        d.setOwner(o);
+        DogDTO dogDTO = new DogDTO(d);
         System.out.println("----");
         System.out.println(dogDTO.toString());
         System.out.println("----");
