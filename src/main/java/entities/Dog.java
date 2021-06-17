@@ -117,7 +117,7 @@ public class Dog implements Serializable {
     }
     
     public Dog(DogDTO dogDTO) {
-        this.id = dogDTO.getId();
+        this.id = -1;
         this.name = dogDTO.getName();
         this.breed = dogDTO.getBreed();
         this.image = dogDTO.getImage();
