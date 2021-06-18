@@ -121,11 +121,11 @@ public class DogFacade implements IDogFacade {
         }
 
         EntityManager em = emf.createEntityManager();
-        Dog dog = doesDogExist(dogDTO);
-        if (dog.getId() > -1) {
-            dog = em.find(Dog.class, dog.getId());
-        }
-//        Dog dog = new Dog(dogDTO); 
+//        Dog dog = doesDogExist(dogDTO);
+//        if (dog.getId() > -1) {
+//            dog = em.find(Dog.class, dog.getId());
+//        }
+        Dog dog = new Dog(dogDTO); 
 
         Owner owner = doesOwnerExist(dogDTO.getOwner());
         if (owner.getId() > -1) {
@@ -135,9 +135,12 @@ public class DogFacade implements IDogFacade {
         try {
             em.getTransaction().begin();
 
-            if (dog.getId() < 0) {
-                em.persist(dog);
-            }
+//            if (dog.getId() < 0) {
+//                em.persist(dog);
+//            }
+            em.persist(dog);
+            System.out.println(dog.getId());
+            
 
             if (owner.getId() < 0) {
                 em.persist(owner);
@@ -201,7 +204,7 @@ public class DogFacade implements IDogFacade {
         try {
             em.getTransaction().begin();
 
-//            dogInDB.setName(dogDTO.getName());
+            dogInDB.setName(dogDTO.getName()); //Uncomment if name is set to uniq i Dog.Class
             dogInDB.setBreed(dogDTO.getBreed());
             dogInDB.setImage(dogDTO.getImage());
             dogInDB.setGender(dogDTO.getGender());
